@@ -18,12 +18,15 @@
     window.addEventListener('message', renderGraph, false);
 
     function renderGraph(event) {
-        var message = event.data, render = renderEndpointSchemaGraph.bind(null, 'graphql-graph');
+        var message = event.data,
+                render = renderEndpointSchemaGraph.bind(null, 'graphql-graph'),
+                graphqlEndpointUrlElement = document.getElementById('graphql-endpoint-url');
 
         if (message.schemaAst) {
+            graphqlEndpointUrlElement.textContent = 'local schema';
             render(message.schemaAst);
         } else if (message.endpointUrl) {
-            document.getElementById('graphql-endpoint-url').textContent = message.endpointUrl;
+            graphqlEndpointUrlElement.textContent = message.endpointUrl;
             fetchClientSchemaAst(message.endpointUrl).then(render);
         } else {
             console.log('Neither schemaAst nor endpointUrl provided in message payload: "' + message + '".');
