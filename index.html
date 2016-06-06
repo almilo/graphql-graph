@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GraphQL Graph</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://npmcdn.com/d3@3.5.17/d3.min.js"></script>
+    <script src="https://npmcdn.com/dagre@0.7.4/dist/dagre.min.js"></script>
+    <script src="https://npmcdn.com/dagre-d3@0.4.17/dist/dagre-d3.min.js"></script>
+    <script src="https://wzrd.in/standalone/graphql@0.6.0"></script>
+    <script src="index.js"></script>
+</head>
+<body>
+<h3 id="graphql-endpoint-url"></h3>
+<svg id="graphql-graph" width="800" height="600"></svg>
+<script>
+    window.addEventListener('message', renderGraph, false);
+
+    function renderGraph(event) {
+        var message = event.data, render = renderEndpointSchemaGraph.bind(null, 'graphql-graph');
+
+        if (message.schemaAst) {
+            render(message.schemaAst);
+        } else if (message.endpointUrl) {
+            document.getElementById('graphql-endpoint-url').textContent = message.endpointUrl;
+            fetchClientSchemaAst(message.endpointUrl).then(render);
+        } else {
+            console.log('Neither schemaAst nor endpointUrl provided in message payload: "' + message + '".');
+        }
+    }
+</script>
+</body>
+</html>
