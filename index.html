@@ -8,28 +8,20 @@
     <script src="https://npmcdn.com/dagre@0.7.4/dist/dagre.min.js"></script>
     <script src="https://npmcdn.com/dagre-d3@0.4.17/dist/dagre-d3.min.js"></script>
     <script src="https://wzrd.in/standalone/graphql@0.6.0"></script>
-    <script src="schema-fetcher.js"></script>
     <script src="index.js"></script>
 </head>
 <body>
-<h3 id="graphql-endpoint-url"></h3>
 <svg id="graphql-graph" width="800" height="600"></svg>
 <script>
     window.addEventListener('message', renderGraph, false);
 
     function renderGraph(event) {
-        var message = event.data,
-                render = renderEndpointSchemaGraph.bind(null, 'graphql-graph'),
-                graphqlEndpointUrlElement = document.getElementById('graphql-endpoint-url');
+        var schemaAst = event.data;
 
-        if (message.schemaAst) {
-            graphqlEndpointUrlElement.textContent = 'local schema';
-            render(message.schemaAst);
-        } else if (message.endpointUrl) {
-            graphqlEndpointUrlElement.textContent = message.endpointUrl;
-            fetchClientSchemaAst(message.endpointUrl).then(render);
+        if (schemaAst) {
+            renderSchemaGraph(schemaAst, 'graphql-graph');
         } else {
-            console.log('Neither schemaAst nor endpointUrl provided in message payload: "' + message + '".');
+            console.log('SchemaAst not provided in message payload: "' + event + '".');
         }
     }
 </script>
